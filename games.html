@@ -1,0 +1,76 @@
+<html>
+<body>
+
+<canvas id="game" width="600" height="600" style="background:#33B033"></canvas>
+
+<script>
+  const canvas = document.getElementById('game')
+  const ctx = canvas.getContext('2d')
+
+  let score = 0
+
+  let snake = {
+    x: 100,
+    y: 100,
+    width: 10,
+    speed: 5,
+    color: '#3479BA'
+  }
+
+  let apple = {
+    x: Math.floor(Math.random() * 600),
+    y: Math.floor(Math.random() * 600),
+    width: 10,
+    height: 10,
+    color: 'red'
+  }
+
+  let keys = {}
+  document.addEventListener('keydown', e => keys[e.key] = true)
+  document.addEventListener('keyup', e => keys[e.key] = false)
+
+  function update() {
+    if (keys['ArrowLeft'])  snake.x -= snake.speed
+    if (keys['ArrowRight']) snake.x += snake.speed
+    if (keys['ArrowUp'])    snake.y -= snake.speed
+    if (keys['ArrowDown'])  snake.y += snake.speed
+
+    // eat apple
+    if (snake.x < apple.x + apple.width &&
+        snake.x + snake.width > apple.x &&
+        snake.y < apple.y + apple.height &&
+        snake.y + snake.width > apple.y) {
+      score++
+      apple.x = Math.floor(Math.random() * 590)
+      apple.y = Math.floor(Math.random() * 590)
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // draw snake
+    ctx.fillStyle = snake.color
+    ctx.fillRect(snake.x, snake.y, snake.width, snake.width)
+
+    // draw apple
+    ctx.fillStyle = apple.color
+    ctx.fillRect(apple.x, apple.y, apple.width, apple.height)
+
+    // draw score
+    ctx.fillStyle = 'white'
+    ctx.font = '20px Arial'
+    ctx.fillText('Score: ' + score, 10, 20)
+  }
+
+  function gameLoop() {
+    update()
+    draw()
+    requestAnimationFrame(gameLoop)
+  }
+
+  gameLoop()
+</script>
+
+</body>
+</html>
